@@ -9,13 +9,28 @@ module.exports = function (app) {
 
 //  get cars
 router.get('/',function(req, res, next){
-  let page  = req.query.page;
-  let count = req.query.count; 
+  let page  = Number(req.query.page);
+  let count = Number(req.query.count); 
   catalog.getCars(page, count, function(err ,result){
     if (err)
       res.status(400).send({status : 'Error', message : err});
     else {
-      res.status(200).send(result);
+      catalog.getCount(function(err, count_record){
+        if (err){
+          res.status(500).send({status : 'Error', message : 'undefined count elem'});
+        }
+        data = {
+          content : result,
+          info : {
+            count   : count_record,
+            pages   : Math.ceil(count_record / count) - 1,
+            current : page,
+            limit   : count
+          }
+        }
+        console.log(data);
+        res.status(200).send(data);
+      });
     }
   });
 });

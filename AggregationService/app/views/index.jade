@@ -1,11 +1,39 @@
-extends layout
+include layout
 
-block content
-  h1= title
-  p Welcome to #{title}
+div.navbar-wrapper
+  div.container
+    div.row
+      div.col-md-3
+        p.text-center.nav-title FrontEnd
+      div.col-md-7
+        ul.nav.nav-pills
+          li.active 
+            a Автомобили
+          li 
+            a Заказы
+          li
+            a Платежи
+      div.col-md-2
+        
+block list
   .container-fluid
     .row
       .col-md-2
       .col-md-8
-        p Welcome to bootstrap
+        div#list.list 
+        div.container
+          .row
+            .col-md-10
+              ul#pager.pager
+                li.previous
+                  a &larr; Предыдущая
+                li.next 
+                  a Следующая &rarr;
+            .col-md-2
+              .btn-group
+                select#count_record
+                  option#min_record(counts=10) 10 
+                  option#md_record(selected,counts=20) 20
+                  option#lg_record(counts=30) 30
       .col-md-2
+include footer

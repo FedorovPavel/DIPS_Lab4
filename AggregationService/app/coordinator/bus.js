@@ -6,7 +6,7 @@ module.exports = {
         const url = _CatalogHost + '/catalog?page=' + page + '&count=' + count;
         const options = createOptions(url, 'GET');
         createAndSendGetHttpRequest(options, function (err, status, response) {
-            return responseHandlerArrayObject(err, status, response, callback);
+            return responseHandlerObject(err, status, response, callback);
         });
         return;
     },

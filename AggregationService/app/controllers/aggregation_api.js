@@ -2,7 +2,8 @@ var express   = require('express'),
     router    = express.Router(),
     bus       = require('./../coordinator/bus'),
     validator = require('./../validator/validator'),
-    amqp = require('amqplib/callback_api'),
+    amqp      = require('amqplib/callback_api'),
+    render    = require('./render'),
     interval  = 20000;// 20s to repeate check live
     
 

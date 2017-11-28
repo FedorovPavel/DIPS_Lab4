@@ -1,0 +1,38 @@
+@main-color : #0288d1;
+@sub-color  : #005b9f;
+@light-text : #ffffff;
+
+div.car_container{
+    border          : 1px solid @main-color;   
+    border-radius   : 5px;
+    margin          : 10px;
+    div.record_header {
+        background:  @main-color;
+        .align-right{
+            text-align: right;
+        }
+        .vert-align-m{
+            vertical-align: middle;
+        }
+        h4.title{
+            color: @light-text;
+        }
+        div.view_detail_info{
+            background: inherit;
+            outline: none;
+            margin: 10px;
+        }
+    }
+    div.record_header:hover{
+        background:  @sub-color;
+    }
+    div.main_info{
+        span{
+            font-size: 15px;
+        }
+        span.head_label{
+            font-size: 18px;
+            font-weight: 700;
+        }
+    }
+}

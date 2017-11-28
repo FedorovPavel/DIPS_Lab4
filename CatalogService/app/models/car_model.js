@@ -60,6 +60,14 @@ CarSchema.statics.getCar = function(id, callback){
   });
 };
 
+CarSchema.statics.getCount = function(callback){
+  return this.count({}, function(err, count){
+    if (err)
+      return callback(err, null);
+    return callback(null, count);
+  });
+}
+
 // CarSchema.statics.getCars = function(arr, callback){
 //   return this.find({'_id' : {$in : arr }}, function (err, cars) {
 //     if (err)
@@ -76,6 +84,8 @@ CarSchema.statics.getCar = function(id, callback){
 //       }
 //   });
 // }
+
+
 
 function getCarInfo(car) {
   let item = {
