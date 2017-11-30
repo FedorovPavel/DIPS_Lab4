@@ -1,39 +1,23 @@
 include layout
 
-div.navbar-wrapper
-  div.container
-    div.row
-      div.col-md-3
-        p.text-center.nav-title FrontEnd
-      div.col-md-7
-        ul.nav.nav-pills
-          li.active 
-            a Автомобили
-          li 
-            a Заказы
-          li
-            a Платежи
-      div.col-md-2
-        
+include nav
+       
 block list
-  .container-fluid
+  .container-fluid.content-field
     .row
-      .col-md-2
-      .col-md-8
+      .col-md-8.col-md-offset-2.content-row
         div#list.list 
-        div.container
-          .row
-            .col-md-10
-              ul#pager.pager
-                li.previous
-                  a &larr; Предыдущая
-                li.next 
-                  a Следующая &rarr;
-            .col-md-2
-              .btn-group
-                select#count_record
-                  option#min_record(counts=10) 10 
-                  option#md_record(selected,counts=20) 20
-                  option#lg_record(counts=30) 30
-      .col-md-2
+        .row
+          .col-xs-10
+            ul#pager.pager
+              li.previous
+                a &larr; Предыдущая
+              li.next 
+                a Следующая &rarr;
+          .col-xs-2
+            .btn-group.select_container
+              select#count_record.count_selector
+                option#min_record(counts=10) 10 
+                option#md_record(selected,counts=20) 20
+                option#lg_record(counts=30) 30
 include footer
