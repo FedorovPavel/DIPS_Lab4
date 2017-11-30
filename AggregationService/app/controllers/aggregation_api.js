@@ -213,41 +213,41 @@ router.get('/orders', function(req, res, next){
       res.status(status).send(orders);
     else {
       let _counter_to_ready_order = 0;
-      if (orders){
-        for (let I = 0; I < orders.length; I++){
-          const car_id = orders[I].CarID;
+      if (orders && orders.content){
+        for (let I = 0; I < orders.content.length; I++){
+          const car_id = orders.content[I].CarID;
           bus.getCar(car_id, function(err, status, car){
-            delete orders[I].CarID;
+            delete orders.content[I].CarID;
             if (err){
-              orders[I].Car = 'Неизвестно';
+              orders.content[I].Car = 'Неизвестно';
             } else {
               if (car && status == 200){
-                orders[I].Car = car;
+                orders.content[I].Car = car;
               } else {
-                orders[I].Car = 'Неизвестно';
+                orders.content[I].Car = 'Неизвестно';
               }
             }
-            if (typeof(orders[I].BillingID) != 'undefined'){
-              const billing_id = orders[I].BillingID;
+            if (typeof(orders.content[I].BillingID) != 'undefined'){
+              const billing_id = orders.content[I].BillingID;
               bus.getBilling(billing_id, function(err, status, billing){
-                delete orders[I].BillingID;
+                delete orders.content[I].BillingID;
                 if (err){
-                  orders[I].Billing = 'Неизвестно';
+                  orders.content[I].Billing = 'Неизвестно';
                 } else {
                   if (billing && status == 200){
-                    orders[I].Billing = billing;
+                    orders.content[I].Billing = billing;
                   } else {
-                    orders[I].Billing = 'Неизвестно';
+                    orders.content[I].Billing = 'Неизвестно';
                   }
                 }
                 _counter_to_ready_order++;
-                if (_counter_to_ready_order == orders.length){
+                if (_counter_to_ready_order == orders.content.length){
                   res.status(200).send(orders);
                 }
               });
             } else {
               _counter_to_ready_order++;
-              if (_counter_to_ready_order == orders.length){
+              if (_counter_to_ready_order == orders.content.length){
                 res.status(200).send(orders);
               }
             }
