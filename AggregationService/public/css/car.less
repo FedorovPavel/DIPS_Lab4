@@ -1,6 +1,9 @@
-@main-color : #0288d1;
-@sub-color  : #005b9f;
-@light-text : #ffffff;
+@main-color         : #0288d1;
+@sub-color          : #005b9f;
+@light-text         : #ffffff;
+@dark-text          : #353535;
+@button-color       : #3366FF;
+@button-color-hover : #6699FF;
 
 div.car_container{
     border          : 1px solid @main-color;   
@@ -8,6 +11,7 @@ div.car_container{
     margin          : 10px;
     div.record_header {
         background:  @main-color;
+        cursor: pointer;
         .align-right{
             text-align: right;
         }
@@ -27,12 +31,32 @@ div.car_container{
         background:  @sub-color;
     }
     div.main_info{
+        margin-top: 10px;
         span{
             font-size: 15px;
         }
         span.head_label{
             font-size: 18px;
             font-weight: 700;
+        }
+    }
+    div.detail_info{
+        span{
+            font-size: 15px;
+        }
+        span.head_label{
+            font-size: 18px;
+            font-weight: 700;
+        }
+        button.create_order{
+            margin: 20px 0px 10px 0px;
+            font-size: 20px;
+            background: @button-color;
+            color: @light-text;
+        }
+        button.create_order:hover{
+            background: @button-color-hover;
+            color: @dark-text;
         }
     }
 }

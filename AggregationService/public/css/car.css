@@ -5,6 +5,7 @@ div.car_container {
 }
 div.car_container div.record_header {
   background: #0288d1;
+  cursor: pointer;
 }
 div.car_container div.record_header .align-right {
   text-align: right;
@@ -23,10 +24,30 @@ div.car_container div.record_header div.view_detail_info {
 div.car_container div.record_header:hover {
   background: #005b9f;
 }
+div.car_container div.main_info {
+  margin-top: 10px;
+}
 div.car_container div.main_info span {
   font-size: 15px;
 }
 div.car_container div.main_info span.head_label {
   font-size: 18px;
   font-weight: 700;
+}
+div.car_container div.detail_info span {
+  font-size: 15px;
+}
+div.car_container div.detail_info span.head_label {
+  font-size: 18px;
+  font-weight: 700;
+}
+div.car_container div.detail_info button.create_order {
+  margin: 20px 0px 10px 0px;
+  font-size: 20px;
+  background: #3366FF;
+  color: #ffffff;
+}
+div.car_container div.detail_info button.create_order:hover {
+  background: #6699FF;
+  color: #353535;
 }
