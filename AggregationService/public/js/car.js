@@ -1,10 +1,19 @@
+// class car{
+//     constructor(){
+
+//     }
+// }
+
 var carTemplate;
+var carErrorTemplate;
 
 function getCarTemplate(){
-    const url = '/carTemplate';
+    const url = '/carTemplates';
     $.get(url, function(template){
-        carTemplate = $.parseHTML(template);
+        carTemplate = $.parseHTML(template.successfully);
+        carErrorTemplate = $.parseHTML(template.error);
     });
+    return;
 }
 
 function fillListWithCar(list){
@@ -45,14 +54,29 @@ function fillListWithCar(list){
     }
 }
 
+function addToListException(err){
+    let template = $(carErrorTemplate).clone();
+    $(template).find('span.status_code').text(err.status);
+    $(template).find('span.error_msg').text(err.responseText);
+    $('div#list').append(template);
+    return;
+}
+
 function getCars(page, count) {
     const url = '/aggregator/catalog?page=' + page + '&count=' + count;
-    $.get(url, function(res){
-        clearList();
-        $('div#list').attr('currentPage',page);
-        fillListWithCar(res.content);
-        pagination(res.info.current, res.info.pages);
-    });
+    $.get(url)
+        .done(function(res){
+            clearList();
+            $('div#list').attr('currentPage',page);
+            fillListWithCar(res.content);
+            pagination(res.info.current, res.info.pages);
+        })
+        .fail(function(res){
+            clearList();
+            $('div#list').attr('currentPage',0);
+            addToListException(res);
+            pagination(0,0);
+        })
 }
 
 function updateCarInfo(record, info){
