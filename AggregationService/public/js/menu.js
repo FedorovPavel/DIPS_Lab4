@@ -1,8 +1,41 @@
+// var menu;
+// class menu {
+//     constructor(){
+//         this.car    = new car;
+//         this.order  = new order;
+//         this.page   = 0;
+//         this.count  = 20;
+//     };
+//     editPage(page){
+//         this.page = page;
+//     }
+// }
+function bindHandleToHeader(){
+    const menuPills = $('ul#nav-pills');    
+    const cars      = menuPills.find('li#automobile-pill');
+    const orders    = menuPills.find('li#orders-pill');
+    $(cars).click(function(){
+        $(menuPills).find('li').removeClass('active');
+        $(this).addClass('active');
+        $('body').attr('openTab','catalog');
+        recordCounter();
+        $('div#list').attr('currentPage','0');
+        changePager(); 
+    });
+    $(orders).click(function(){
+        $(menuPills).find('li').removeClass('active');
+        $(this).addClass('active');
+        $('body').attr('openTab','order');
+        recordCounter();
+        $('div#list').attr('currentPage','0');
+        changePager(); 
+    });
+}
+
 function recordCounter(){
     $('select#count_record').change(function(){
         let newPage = $('div#list').attr('currentPage', 0);
-        changePager();
-        
+        changePager();    
     });
 }
 
@@ -36,30 +69,31 @@ function changePager(){
     const mainPager = $('ul#pager');
     const prev = $(mainPager).find('li.previous')[0];
     const next = $(mainPager).find('li.next')[0];
+    const page  = $('div#list').attr('currentPage');
+    const count = Number($('select#count_record').find('option').filter(':selected').attr('counts'));
     switch (list){
         case 'catalog':
             $(prev).click(function(){
                 handlePager(this, getCars)});
             $(next).click(function(){
                 handlePager(this, getCars)});
-            const page  = $('div#list').attr('currentPage');
-            const count = Number($('select#count_record').find('option').filter(':selected').attr('counts'));
             getCars(page, count);
             break;
-        case 'orders':
+        case 'order':
             $(prev).click(function(){
                 handlePager(this, getOrders)});
             $(next).click(function(){
                 handlePager(this, getOrders)});
+            getOrders(page, count);
             break;
     }
 }
 
-
-
 $(document).ready(function(){
+    // menu = new menu();
     getCarTemplate();
     getOrderTemplate();
+    bindHandleToHeader();
     $('body').attr('openTab','catalog');
     recordCounter();
     $('div#list').attr('currentPage','0');
