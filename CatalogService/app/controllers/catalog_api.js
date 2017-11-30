@@ -28,7 +28,6 @@ router.get('/',function(req, res, next){
             limit   : count
           }
         }
-        console.log(data);
         res.status(200).send(data);
       });
     }
