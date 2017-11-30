@@ -148,6 +148,14 @@ OrderSchema.statics.setCompleteStatus = function(id, callback){
   });
 };
 
+OrderSchema.statics.getCount = function(callback){
+  return this.count({}, function(err, count){
+    if (err)
+      return callback(err, null);
+    return callback(null, count);
+  });
+}
+
 function createOrder(object){
   const model = mongoose.model('Order');
   let item = new model();

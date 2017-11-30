@@ -15,15 +15,28 @@ router.get('/', function(req, res, next){
   let page  = req.query.page;
   let count = req.query.count;
   const id = "59f634f54929021fa8251644";
-  orders.getOrders(id, page, count, function(err, orders){
+  orders.getOrders(id, page, count, function(err, rOrders){
     if (err) {
       if (err.kind == 'ObjectId')
         res.status(400).send({status : 'Error', message : 'Bad request : Invalid ID'});
       else
         res.status(400).send({status : 'Error', message : err});
     } else {
-      if (orders) {
-        res.status(200).send(orders);
+      if (rOrders) {
+        orders.getCount(function(err, countRecord){
+          if (err)
+            return res.status(500).send({status : 'Error', message : err});
+          let data = {
+            content : rOrders,
+            info : {
+              count   : countRecord,
+              pages   : Math.ceil(countRecord / count) - 1,
+              current : page,
+              limit   : count
+            }
+          }
+          res.status(200).send(data);
+        });
       } else {
         res.status(404).send({status : 'Error', message : 'Not found orders'});
       }
