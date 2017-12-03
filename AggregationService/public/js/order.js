@@ -1,15 +1,16 @@
 class order{
     constructor(menu){
-        this.menu = menu;
-        this.template = '';
-        this.draft = '';
-        this.paid = '';
+        this.menu       = menu;
+        this.template   = null;
+        this.draft      = null;
+        this.paid       = null;
         this.getOrderTemplate();
         this.getDraftTemplate();
         this.getPaidTemplate();
         this.paidOperation = false;
     }
 
+    //  Получение шаблона для оформления платежа
     getPaidTemplate(){
         let self = this;
         const url = '/orderTemplate/paid';
@@ -18,6 +19,7 @@ class order{
         });
     }
 
+    //  Получение шаблона для заказа
     getOrderTemplate(){
         let self = this;
         const url = '/orderTemplate';
@@ -26,6 +28,7 @@ class order{
         });
     }
 
+    //  Получение шаблона для оформления заказа
     getDraftTemplate(){
         let self = this;
         const url = '/orderTemplate/draft';
@@ -34,6 +37,7 @@ class order{
         });
     }
 
+    //  Обработчик завершения заказа
     handleToCompleted(id, sender){
         let self = this;
         id = self.menu.checkID(id);
@@ -45,7 +49,6 @@ class order{
                 if (req.readyState != 4)
                     return;
                 if (req.status == 202){
-                    $(sender).text('Оплатить');
                     const list = self.menu.getList();
                     const record = $(list).find('div').filter(function(){
                         if ($(this).attr('id') == id)
@@ -53,14 +56,18 @@ class order{
                     });
                     $(record).find('span.status').text('Completed');
                     $(sender).remove();
+                } else {
+                    self.menu.rendErrorTemplate(req.responseText, req.status);
                 }
             }
             req.send();
         } else {
             alert ('НЕВЕРНЫЙ ID');
         }
+        return;
     }
 
+    //  Отправка запроса на оплату заказа
     sendPaidInfo(id, data, sender){
         const self = this;
         let req = new XMLHttpRequest();
@@ -83,17 +90,22 @@ class order{
                 });
                 $('body').find('#paid_panel').remove();
                 self.paidOperation = false;
+            } else {
+                self.menu.rendErrorTemplate(req.responseText, req.status);
             }
         }
         req.send(data);
     }
 
+    //  Обработчик на оплату заказа
     handleToPaid(id, sender){
         let self = this;
         id = self.menu.checkID(id);
         if (id){
             if (self.paidOperation){
-
+                const form = $('body').find('#paid_panel');
+                self.fillingPaidForm(id, form, sender);
+                $('body').append(form);
             } else {
                 self.paidOperation = true;
                 const form = $(self.paid).clone();
@@ -105,6 +117,7 @@ class order{
         }
     }
 
+    //  Обработчик на подтверждение заказа
     handleToConfirm(id, sender){
         let self = this;
         id = self.menu.checkID(id);
@@ -117,16 +130,15 @@ class order{
                     return;
                 if (req.status == 200){
                     $(sender).text('Оплатить');
-
                     const list = self.menu.getList();
                     const record = $(list).find('div').filter(function(){
                         if ($(this).attr('id') == id)
                             return true;
                     });
                     $(record).find('span.status').text('WaitForBilling');
-                    $(sender).click(function(sender){
-                        self.handleToPaid(id, this);
-                    });
+                    $(sender).click(function(sender){self.handleToPaid(id, this);});
+                } else {
+                    self.menu.rendErrorTemplate(req.responseText, req.status);
                 }
             }
             req.send();
@@ -145,9 +157,9 @@ class order{
                 self.menu.pagination(res.info.current, res.info.pages);
             })
             .fail(function(res){
-                self.menu.addToListException(res);
+                self.menu.rendErrorTemplateToList(res.responseText, res.status);
                 self.menu.pagination(0,0);
-            })
+            });
     }
 
     fillListWithOrder(list){
@@ -212,10 +224,38 @@ class order{
                     break;
 
             }
+            if (content.Car == 'Неизвестно'){
+                $(record).find('.car_content').children().remove();
+                $(record).find('.car_content').append('<span.car_exist> Автомобиль: ' + content.Car + '</span>');
+            } else {
+                const container = $(record).find('.car_content');
+                $(container).find('.manufacture').text(content.Car.Manufacturer);
+                $(container).find('.model').text(content.Car.Model);
+                $(container).find('.type').text(content.Car.Type);
+                $(container).find('.cost').text(content.Car.Cost);
+                $(container).find('.door').text(content.Car.Doors);
+                $(container).find('.person').text(content.Car.Person);
+                $(container).find('.locationCity').text(content.Car.Location.City);
+                $(container).find('.locationStreet').text(content.Car.Location.Street);
+                $(container).find('.locationHouse').text(content.Car.Location.House);
+            }
+            if (content.Billing == 'Неизвестно'){
+                $(record).find('.billing_content').children().remove();
+                $(record).find('.billing_content').append('<span.billing_exist> Платеж: ' + content.Billing + '</span>');
+            }else if (typeof(content.Billing) != 'undefined'){
+                const container = $(record).find('.billing_content');
+                $(container).find('.billingId').text(content.Billing.id);
+                $(container).find('.model').text(content.Billing.PaySystem);
+                $(container).find('.type').text(content.Billing.Account);
+                $(container).find('.cost').text(content.Billing.Cost);
+            } else {
+                $(record).find('.billing_content').children().remove();
+            }
             $(self.menu.getList()).append(record);
         }
     }
 
+    //  Заполнение платежной формы
     fillingPaidForm(id, form, sender){
         let self = this;
         $(form).find('button.btn_submit').attr('id', id);
@@ -241,7 +281,7 @@ class order{
                 $(form).find('span.errStatus').text('');
             }
         });
-        $(form).find('button.btn').click(function(){
+        $(form).find('button.btn.btn_submit').click(function(){
             const data = {
                 paySystem   : self.menu.checkPaySystem($(form).find('option').filter(':selected').val()),
                 account     : self.menu.checkAccount($(form).find('#account').val()),
