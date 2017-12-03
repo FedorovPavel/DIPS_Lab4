@@ -26,7 +26,7 @@ class car{
             $(record).find('div.record_header').click(function(){
                 if ($(this).attr('state') == 'close'){
                     if ($(this).attr('filling') == 'false'){
-                        self.getCar($(this).attr('carId'));
+                        self.getCar($(this).attr('carId'), this);
                         $(this).attr('filling', true);
                     } else {
                         $(record).find('.detail_info').removeClass('hidden');
@@ -67,7 +67,7 @@ class car{
             .fail(function(res){
                 self.menu.clearList();
                 self.menu.page = 0;
-                self.menu.addToListException(res);
+                self.menu.rendErrorTemplateToList(res.responseText, res.status);
                 self.menu.pagination(0,0);
             })
     }
@@ -82,7 +82,7 @@ class car{
         $(detail).removeClass('hidden');
     }
     
-    getCar(id) {
+    getCar(id, sender) {
         let self = this;
         const url = '/aggregator/catalog/' + id;
         $.get(url, function(res){
@@ -91,6 +91,10 @@ class car{
                     return true;
             });
             self.updateCarInfo(record, res);
+        })
+        .fail(function(res){
+            self.menu.rendErrorTemplate(res.responseText, res.status);
+            $(sender).attr('filling','false');
         });
     }
 }
