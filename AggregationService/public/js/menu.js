@@ -16,6 +16,7 @@ class menu {
         this.changePager();
     };
 
+    //  Validate methods 
     checkPosIntNumber(text){
         if (text){
             let res = Number(parseInt(text));
@@ -47,6 +48,7 @@ class menu {
             return null;
         }
     }
+
     checkAccount(text){
         if (text){
             const input = String(text);
@@ -55,8 +57,8 @@ class menu {
                 return null;
             else {
                 for (let I = 0; I < accountParts.length; I++){
-                    const temp = parseInt(accountParts[I]);
-                    if (isNaN(temp)){
+                    const temp = Number(accountParts[I]);
+                    if (isNaN(temp) || accountParts[I].length < 4){
                         return null;
                     }
                 }
@@ -66,9 +68,10 @@ class menu {
             return null;
         }
     }
+
     checkCost(text){
         if (text){
-            let number = parseFloat(string);
+            let number = parseFloat(text);
             if (isNaN(number) || number < 10.0)
                 return null;
             else 
@@ -77,6 +80,7 @@ class menu {
             return null;
         }
     }
+
     ConvertStringToDate(date){
         date = String(date);
         if (!date)
